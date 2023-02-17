@@ -1,0 +1,59 @@
+#include <stm32f4xx.h>
+
+// SPI - AF5, PA4 - SPI1_NSS, PA5 - SPI1_SCK, PA6 - SPI1_MISO, PA7 - SPI1_MOSI
+// USING (PA5 as SCK, PA4 as CS, PA6 as SO) FOR MAX6675
+#define CS_PIN 4
+#define SCK_PIN 5
+#define SO_PIN  6
+
+void SPI1_Init(void) {
+  RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;    // enable SPI1 clock
+
+  GPIOA->MODER |=  (1<<(2*CS_PIN)); // set CS as Output
+  GPIOA->MODER &= ~(1<<(2*CS_PIN + 1));
+  GPIOA->MODER |=  (2<<(2*SCK_PIN)); // set SCK as AF
+  GPIOA->MODER |=  (2<<(2*SO_PIN));  // set SO as AF
+
+  GPIOA->AFR[0] |= (5<<(4*SCK_PIN)); // set SCK pin as AF5 (SPI1)
+  GPIOA->AFR[0] |= (5<<(4*SO_PIN));  // set SO pin as AF5 (SPI1)
+
+  SPI1->CR1 &= ~SPI_CR1_BR; // set baud rate to fPCLK/2
+  SPI1->CR1 |= SPI_CR1_MSTR; // set master mode
+  SPI1->CR1 |= SPI_CR1_SSM | SPI_CR1_SSI; // set software slave management
+  SPI1->CR2 |= SPI_CR2_SSOE; // enable SS output
+  SPI1->CR1 |= SPI_CR1_SPE; // enable SPI
+}
+
+uint16_t SPI1_Read(void) {
+  while (!(SPI1->SR & SPI_SR_TXE)); // wait until TX buffer empty
+  GPIOA->ODR |= (1<<CS_PIN); // set CS low
+  SPI1->DR = 0x00; // send dummy byte
+  while (!(SPI1->SR & SPI_SR_RXNE)); // wait until RX buffer not empty
+  GPIOA->ODR &= ~(1<<CS_PIN); // set CS high
+  return SPI1->DR;
+}
+
+void delay_ms(int delay)
+{
+	for(; delay>0; delay--)
+		for(int i=0; i<=3195; i++);
+}
+
+float temperature;
+uint16_t value;
+
+int main(void) {
+
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; // enable GPIOD clock
+  GPIOD->MODER |= (1<<26); // set PD13 as output
+  SPI1_Init();
+
+  while (1) {
+    value = SPI1_Read();
+    temperature = (value >> 3) * 0.25;
+    GPIOD->ODR |= (1<<13); // turn on LED on PC13
+    delay_ms(200);
+    GPIOD->ODR &= ~(1<<13); // turn off LED on PC13
+    delay_ms(200);
+  }
+}

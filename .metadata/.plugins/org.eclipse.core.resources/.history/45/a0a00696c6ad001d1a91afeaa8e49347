@@ -1,0 +1,48 @@
+#include <stm32f4xx.h>
+#include <RCC_Config.h>
+#include <Delay_F407G.h>
+
+void ADC_Config(void);
+void ADC_Conversion(void);
+int ADC_Read(void);
+
+uint32_t ADC_Data;
+
+int main(void)
+{
+	ADC_Config();
+
+	while(1)
+	{
+		ADC_Conversion();
+		ADC_Data = ADC_Read();
+	}
+
+	return 0;
+}
+
+void ADC_Config(void)
+{
+	RCC->AHB2ENR |= (1<<13); // ENABLE ADC CLOCK
+	RCC->AHB2ENR |= (1<<0); // ENABLE GPIOA CLOCK
+	GPIOA->MODER |= (3<<0); // USING PA0 PIN
+	ADC1->CR &= ~(1<<0); // DISABLE ADC
+	ADC1->CFGR &= ~((1<<3) | (1<<4)); // 12-BIT RESOLUTION (00)
+	ADC1->CFGR &= ~(1<<5); // RIGHT ALIGNMENT
+	ADC1->CFGR |= (1<<13); // CONTINUOUS CONVERSION MODE
+	ADC1->SQR1 |= (5<<6); // SELECT CHANNEL 5
+	ADC1->ISR = 0; // CLEAR STATUS REGISTER
+	ADC1->CR |= (1<<0); // ADEN IS SET
+}
+
+void ADC_Conversion(void)
+{
+	while(!(ADC1->ISR & (1<<0)));
+	ADC1->CR |= (1<<2); // ADSTART IS SET - ADC START CONVERSION
+}
+
+int ADC_Read(void)
+{
+	while(!(ADC1->ISR & (1<<2)));
+	return ADC1->DR;
+}

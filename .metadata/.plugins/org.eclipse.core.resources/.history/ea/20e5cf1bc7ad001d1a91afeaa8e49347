@@ -1,0 +1,47 @@
+#include <stm32f4xx.h>
+#include <RCC_Config.h>
+#include <Delay_F407G.h>
+
+void ADC_Config(void);
+void ADC_Conversion(void);
+int ADC_Read(void);
+
+uint32_t ADC_Data;
+
+int main(void)
+{
+	ADC_Config();
+
+	while(1)
+	{
+		ADC_Conversion();
+		ADC_Data = ADC_Read();
+	}
+
+	return 0;
+}
+
+void ADC_Config(void)
+{
+	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; // ENABLE ADC CLOCK
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // ENABLE GPIOA CLOCK
+
+	ADC1->CR1 |= (2<<24); // 8-BIT RESOLUTION (10)
+
+	GPIOA->MODER |= (3<<0); // USING PA0 PIN
+
+	ADC1->CR2 |= (1<<0); // ADON IS SET
+
+	Delay_For(100);
+}
+
+void ADC_Conversion(void)
+{
+	ADC1->CR2 |= (1<<30); // SWSTART IS SET - START CONVERSION
+}
+
+int ADC_Read(void)
+{
+	while(!(ADC1->SR & (1<<1)));
+	return ADC1->DR;
+}

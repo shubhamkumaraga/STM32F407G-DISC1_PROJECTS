@@ -1,0 +1,20 @@
+#include <stm32f4xx.h>
+
+void SPI_Config(void);
+
+int main(void)
+{
+
+	while(1)
+	{
+
+	}
+}
+
+void SPI_Config(void)
+{
+	// ENABLE SPI1 CLOCK
+	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+	// SPI - AF5, PA4 - SPI1_NSS, PA5 - SPI1_SCK, PA6 - SPI1_MISO, PA7 - SPI1_MOSI
+
+}

@@ -1,0 +1,10 @@
+19:06:57 **** Incremental Build of configuration Debug for project P05_ADC_POTENTIOMETER ****
+make -j2 all 
+arm-none-eabi-size   P05_ADC_POTENTIOMETER.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1240	      8	   1568	   2816	    b00	P05_ADC_POTENTIOMETER.elf
+Finished building: default.size.stdout
+ 
+
+19:06:57 Build Finished. 0 errors, 0 warnings. (took 438ms)
+

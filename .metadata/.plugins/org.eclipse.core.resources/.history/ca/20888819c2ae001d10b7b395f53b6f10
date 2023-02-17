@@ -1,0 +1,28 @@
+#include <stm32f4xx.h>
+
+// SPI - AF5, PA4 - SPI1_NSS, PA5 - SPI1_SCK, PA6 - SPI1_MISO, PA7 - SPI1_MOSI
+// USING (PA5 as SCK, PA4 as CS, PA6 as SO) FOR MAX6675
+#define CS_PIN GPIO_Pin_4
+#define SCK_PIN GPIO_Pin_5
+#define SO_PIN  GPIO_Pin_6
+
+void SPI_Config(void);
+
+int main(void)
+{
+
+	while(1)
+	{
+
+	}
+}
+
+void SPI_Config(void)
+{
+	// ENABLE SPI1 AND GPIOA CLOCK
+	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// SET THE MODE OF THE PINS
+
+}

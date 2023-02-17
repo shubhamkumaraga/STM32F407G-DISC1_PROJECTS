@@ -1,0 +1,66 @@
+#include <stm32f4xx.h>
+
+#define SYS_FREQ 16000000
+#define APB1_CLK SYS_FREQ
+#define UART2_BAUDRATE 115200
+
+void USART_Config(void);
+static uint16_t compute_uart2_bd(uint32_t PeriphCLK,uint32_t Baudrate);
+void USART_WriteChar(char ch);
+void USART_WriteStr(char *ch);
+
+int main(void)
+{
+	USART_Config();
+
+	while(1)
+	{
+		USART_WriteStr("SHUBHAM");
+		USART_WriteChar(' ');
+	}
+}
+
+void USART_Config(void)
+{
+	// ENABLE GPIOA CLOCK
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// SET PINS AS ALTERNATE FUNCTION MODE
+	GPIOA->MODER &= ~(1<<4);
+	GPIOA->MODER |= (1<<5);
+
+	// PA2 - USART2_TX, PA3 - USART2_RX (AF7)
+	// SET THE ALTERNATE FUNCTION LOW REGISTER
+	GPIOA->AFR[0] |= (1<<8);
+	GPIOA->AFR[0] |= (1<<9);
+	GPIOA->AFR[0] |= (1<<10);
+	GPIOA->AFR[0] &= ~(1<<11);
+
+	// ENABLE USART2 CLOCK
+	RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+
+	// SET BRR, TE, RE, UE
+	USART2->BRR = compute_uart2_bd(APB1_CLK,UART2_BAUDRATE); // 0x445C;
+	USART2->CR1 = 0x00;
+	USART2->CR1 |= (1<<3);
+	USART2->CR1 |= (1<<13);
+}
+
+static uint16_t compute_uart2_bd(uint32_t PeriphCLK,uint32_t Baudrate)
+{
+	return ((PeriphCLK+(Baudrate/2U))/Baudrate);
+}
+
+void USART_WriteChar(char ch)
+{
+	while(!(USART2->SR & (1<<7)));
+	USART2->DR = (ch & 0xFF);
+}
+
+void USART_WriteStr(char *ch)
+{
+	while(*ch)
+	{
+		USART_WriteChar(*ch++);
+	}
+}

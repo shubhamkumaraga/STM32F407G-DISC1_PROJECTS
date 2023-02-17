@@ -1,0 +1,4 @@
+../Src/main.c:11:5:main	16	static
+../Src/main.c:26:6:USART_Config	16	static
+../Src/main.c:59:17:compute_uart2_bd	16	static
+../Src/main.c:64:6:USART_Read	4	static

@@ -1,0 +1,10 @@
+19:52:44 **** Incremental Build of configuration Debug for project P02_USART_RX_TX ****
+make -j2 all 
+arm-none-eabi-size   P02_USART_RX_TX.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1060	      8	   1568	   2636	    a4c	P02_USART_RX_TX.elf
+Finished building: default.size.stdout
+ 
+
+19:53:06 Build Finished. 0 errors, 0 warnings. (took 21s.952ms)
+

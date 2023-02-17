@@ -1,0 +1,20 @@
+#include <stm32f4xx.h>
+#include <RCC_Config.h>
+#include <Delay_F407G.h>
+
+void USART_Config(void)
+{
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+
+}
+
+int main(void)
+{
+	SysClockConfig();
+
+	while(1)
+	{
+
+	}
+}

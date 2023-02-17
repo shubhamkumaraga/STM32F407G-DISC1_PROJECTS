@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;P02_USART_RX_TX/Inc/Delay_L476.h&apos; to &apos;Delay_F407G.h&apos;" description="Rename resource &apos;Delay_L476.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Inc/Delay_L476.h" name="Delay_F407G.h" stamp="1676462065269" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;P02_USART_RX_TX/Src/Delay_L476.c&apos; to &apos;Delay_F407G.c&apos;" description="Rename resource &apos;Delay_L476.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/Delay_L476.c" name="Delay_F407G.c" stamp="1676462076206" updateReferences="true"/>
+</session>

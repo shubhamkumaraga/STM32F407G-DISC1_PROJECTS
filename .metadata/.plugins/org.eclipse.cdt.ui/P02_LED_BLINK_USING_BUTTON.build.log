@@ -1,0 +1,10 @@
+17:56:38 **** Incremental Build of configuration Debug for project P02_LED_BLINK_USING_BUTTON ****
+make -j2 all 
+arm-none-eabi-size   P02_LED_BLINK_USING_BUTTON.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1060	      8	   1568	   2636	    a4c	P02_LED_BLINK_USING_BUTTON.elf
+Finished building: default.size.stdout
+ 
+
+17:56:39 Build Finished. 0 errors, 0 warnings. (took 781ms)
+

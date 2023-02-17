@@ -1,0 +1,56 @@
+#include<stm32l476xx.h>
+
+void ADC_Config(void);
+void ADC_Conversion(void);
+int ADC_Read(void);
+
+uint32_t ADC_Data;
+uint32_t x;
+
+int main(void)
+{
+	ADC_Config();
+
+	while(1)
+	{
+		ADC_Conversion();
+		ADC_Data = ADC_Read();
+	}
+
+	return 0;
+}
+
+void ADC_Config(void)
+{
+	RCC->AHB2ENR |= (1<<13); // ENABLE ADC CLOCK
+	RCC->AHB2ENR |= (1<<0); // ENABLE GPIOA CLOCK
+	GPIOA->MODER |= (3<<0); // USING PA0 PIN
+	// GPIOA->ODR |= (1<<0); // USE PA0 AS OUTPUT PIN
+	ADC1->CR &= ~(1<<0); // DISABLE ADC
+	ADC1->CR &= ~(1<<29); // ADC NOT IN DEEP-POWER MODE
+	ADC1->CR |= (1<<28); // ADC VOLTAGE REGULATOR ENABLED
+	ADC1->CFGR &= ~((1<<3) | (1<<4)); // 12-BIT RESOLUTION (00)
+	ADC1->CFGR &= ~(1<<5); // RIGHT ALIGNMENT
+	ADC1->CFGR |= (1<<13); // CONTINUOUS CONVERSION MODE
+	ADC1->SQR1 |= (5<<6); // SELECT CHANNEL 5
+	ADC1->ISR = 0; // CLEAR STATUS REGISTER
+	ADC1->CR |= (1<<0); // ADEN IS SET
+}
+
+void ADC_Conversion(void)
+{
+	// while(!(ADC1->ISR & (1<<0)));
+	ADC1->CR |= (1<<1); // ADDIS IS SET - ADC DISABLE COMMAND
+	ADC1->CR |= (1<<2); // ADSTART IS SET - ADC START CONVERSION
+	ADC1->CR |= (1<<3); // JADSTART IS SET
+}
+
+int ADC_Read(void)
+{
+	// ADC1->CR |= (1<<4); // ADC STOP OF REGULAR CONVERSION COMMAND
+	while(!(ADC1->ISR & (1<<2)))
+	{
+		x =  ADC1->ISR;
+	}
+	return ADC1->DR;
+}
